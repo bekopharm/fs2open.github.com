@@ -587,6 +587,8 @@ add_file_folder("HeadTracking"
 	headtracking/headtracking_internal.h
 	headtracking/headtracking.h
 	headtracking/headtracking.cpp
+	headtracking/facetracknoir.h
+	headtracking/facetracknoir.cpp
 )
 if(WIN32)
 	add_file_folder("HeadTracking"

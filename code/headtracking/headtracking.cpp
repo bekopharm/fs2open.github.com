@@ -5,6 +5,8 @@
 #ifdef WIN32
 #include "headtracking/trackir.h"
 #include "headtracking/freetrack.h"
+#else
+#include "headtracking/facetracknoir.h"
 #endif
 
 #include <memory>
@@ -49,6 +51,13 @@ namespace headtracking
 		if (freetrack)
 		{
 			currentProvider = std::move(freetrack);
+			return true;
+		}
+#else 
+		auto facetracknoir = initProvider<facetracknoir::FaceTrackNoIRProvider>();
+		if (facetracknoir)
+		{
+			currentProvider = std::move(facetracknoir);
 			return true;
 		}
 #endif
