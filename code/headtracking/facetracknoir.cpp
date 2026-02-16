@@ -27,15 +27,16 @@ namespace headtracking
 			//((FaceTrackNoIRLibrary *)obj)->WorkerThread();
 			//((FaceTrackNoIRLibrary *)obj)->m_Aborted = true;
 			// ((FaceTrackNoIRLibrary *)obj)->data;
-			printf("GetDataThread started\n");
+			printf("GetDataThread v2 started\n");
 
 
 			while(((FaceTrackNoIRLibrary *)obj)->GetData()) {
 				// printf("GetDataThread executing\n");
-				sleep(0.2);
+				// do we need a sleep? don't think so.
+				// sleep(0.1);
 			}
 
-			printf("GetDataThread stopped\n");
+			printf("GetDataThread v2 stopped\n");
 
 			return 1;
 		}
@@ -111,7 +112,7 @@ namespace headtracking
 				return true;
 			}
 
-			buffer[n] = '\0'; 
+			// buffer[n] = '\0'; 
 
 			static_assert( sizeof(double) == 8 );
 
@@ -135,6 +136,11 @@ namespace headtracking
 			data.pitch = pitch;
 			data.roll = roll;
 			data.frameNumber++;
+
+
+			// printf("UDP socket:   x: %f     y: %f    z: %f\n", data.x, data.y,  data.z);
+			// printf("UDP socket: yaw: %f pitch: %f roll: %f\n", data.yaw, data.pitch, data.roll);
+
 
 			// printf("Yaw %f, pitch: %f, roll: %f \n", data.yaw, data.pitch, data.roll);
 			return true;
@@ -194,10 +200,11 @@ namespace headtracking
 
 		bool FaceTrackNoIRProvider::query(HeadTrackingStatus* statusOut)
 		{
+			// map the FaceTrackNoIR / OpenTrack data to fs2open data
 			// TODO: pitch seems to be yaw for OpenTrack and needs invert - needs confirmation!
-			statusOut->pitch = (float) (library.data.yaw / 1000.0f) * - 1;
+			statusOut->pitch = (float) (library.data.yaw / 1000.0f);
 			// TODO: yaw seems to be z for OpenTrack and needs invert - needs confirmation!
-			statusOut->yaw = (float) (library.data.z / 1000.0f) * -1;
+			statusOut->yaw = (float) (library.data.z / 1000.0f);
 			statusOut->roll =(float) library.data.roll / 1000.0f ;
 
 			// Coordinates are in millimeters
@@ -206,8 +213,9 @@ namespace headtracking
 			// TODO: z seems to be pitch for OpenTrack - needs confirmation!
 			statusOut->z = (float) library.data.pitch / 1000.0f;
 
-			printf("Client:   x: %f     y: %f    z: %f\n", statusOut->x, statusOut->y,  statusOut->z);
-			printf("Client: yaw: %f pitch: %f roll: %f\n", statusOut->yaw, statusOut->pitch, statusOut->roll);
+
+//			printf("Client:   x: %f     y: %f    z: %f\n", statusOut->x, statusOut->y,  statusOut->z);
+//			printf("Client: yaw: %f pitch: %f roll: %f\n", statusOut->yaw, statusOut->pitch, statusOut->roll);
 
 			return true;
 		}
